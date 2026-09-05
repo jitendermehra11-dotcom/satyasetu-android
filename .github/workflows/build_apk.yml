@@ -16,9 +16,9 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         
-    - name: Download Gradle 8.5 and Generate Wrapper
+    - name: Download Gradle 8.5 Silently & Generate Wrapper
       run: |
-        wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
+        wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
         unzip -q gradle-8.5-bin.zip
         ./gradle-8.5/bin/gradle wrapper --gradle-version 8.5
         chmod +x gradlew
