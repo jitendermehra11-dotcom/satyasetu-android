@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.satyasetu.data.model.*
+import com.satyasetu.ui.screen.EmergencySosScreen
 import com.satyasetu.ui.screen.PropertyVerificationScreen
 import com.satyasetu.ui.screen.UtilityPortalScreen
 import com.satyasetu.ui.viewmodel.VerificationViewModel
@@ -47,6 +48,12 @@ class MainActivity : ComponentActivity() {
                                 onBack = { currentScreen = "HOME" }
                             )
                         }
+                        "SOS_SCREEN" -> {
+                            EmergencySosScreen(
+                                viewModel = viewModel,
+                                onBack = { currentScreen = "HOME" }
+                            )
+                        }
                         else -> {
                             SatyaSetuHomeScreen(
                                 services = services,
@@ -58,6 +65,9 @@ class MainActivity : ComponentActivity() {
                                         activeServiceUrl = service.targetUrl
                                         currentScreen = "UTILITY_SCREEN"
                                     }
+                                },
+                                onSosClick = {
+                                    currentScreen = "SOS_SCREEN"
                                 }
                             )
                         }
@@ -72,7 +82,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SatyaSetuHomeScreen(
     services: List<CitizenServiceItem>,
-    onServiceClick: (CitizenServiceItem) -> Unit
+    onServiceClick: (CitizenServiceItem) -> Unit,
+    onSosClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -86,11 +97,22 @@ fun SatyaSetuHomeScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+            // आपातकालीन SOS बटन सबसे ऊपर
+            Button(
+                onClick = onSosClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("🚨 आपातकालीन SOS (Offline Mesh)", fontWeight = FontWeight.Bold, color = Color.White)
+            }
+
             Text(
                 text = "नागरिक व कानूनी सत्यापन पोर्टल",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
 
             LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
