@@ -1,17 +1,25 @@
 package com.satyasetu.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.satyasetu.data.model.*
+import com.satyasetu.data.service.PropertyVerificationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class VerificationViewModel : ViewModel() {
+
+    private val propertyService = PropertyVerificationService()
 
     private val _propertyListings = MutableStateFlow<List<PropertyRecord>>(emptyList())
     val propertyListings: StateFlow<List<PropertyRecord>> = _propertyListings
 
     private val _citizenServices = MutableStateFlow<List<CitizenServiceItem>>(emptyList())
     val citizenServices: StateFlow<List<CitizenServiceItem>> = _citizenServices
+
+    private val _selectedProperty = MutableStateFlow<PropertyRecord?>(null)
+    val selectedProperty: StateFlow<PropertyRecord?> = _selectedProperty
 
     private val _sosBeacon = MutableStateFlow<EmergencyBeacon?>(null)
     val sosBeacon: StateFlow<EmergencyBeacon?> = _sosBeacon
@@ -36,6 +44,14 @@ class VerificationViewModel : ViewModel() {
             PropertyRecord("102/4", "KH-883", "सुरेश कुमार", "राजस्थान", "जयपुर", 1200.0, "RERA-RJ-2024-001", false, false, PropertyStatus.VERIFIED),
             PropertyRecord("45/1", "KH-102", "अमित शर्मा", "उत्तर प्रदेश", "लखनऊ", 2400.0, null, true, true, PropertyStatus.UNDER_DISPUTE)
         )
+    }
+
+    // खसरा नंबर से प्रॉपर्टी वेरीफाई करने का फंक्शन
+    fun verifyProperty(khasraNo: String, state: String) {
+        viewModelScope.launch {
+            val result = propertyService.verifyPropertyStatus(khasraNo, state)
+            _selectedProperty.value = result
+        }
     }
 
     fun triggerEmergencySOS(lat: Double, lng: Double, battery: Int) {
