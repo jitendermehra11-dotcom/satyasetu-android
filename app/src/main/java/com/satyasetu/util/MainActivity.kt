@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.satyasetu.data.model.*
 import com.satyasetu.ui.screen.PropertyVerificationScreen
+import com.satyasetu.ui.screen.UtilityPortalScreen
 import com.satyasetu.ui.viewmodel.VerificationViewModel
 
 class MainActivity : ComponentActivity() {
@@ -30,18 +31,36 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     var currentScreen by remember { mutableStateOf("HOME") }
+                    var activeServiceTitle by remember { mutableStateOf("") }
+                    var activeServiceUrl by remember { mutableStateOf("") }
 
-                    if (currentScreen == "PROPERTY_SCREEN") {
-                        PropertyVerificationScreen(viewModel)
-                    } else {
-                        SatyaSetuHomeScreen(
-                            viewModel = viewModel,
-                            onServiceClick = { serviceId ->
-                                if (serviceId == "1") {
-                                    currentScreen = "PROPERTY_SCREEN"
+                    val services by viewModel.citizenServices.collectAsState()
+
+                    when (currentScreen) {
+                        "PROPERTY_SCREEN" -> {
+                            PropertyVerificationScreen(viewModel)
+                        }
+                        "UTILITY_SCREEN" -> {
+                            UtilityPortalScreen(
+                                title = activeServiceTitle,
+                                url = activeServiceUrl,
+                                onBack = { currentScreen = "HOME" }
+                            )
+                        }
+                        else -> {
+                            SatyaSetuHomeScreen(
+                                services = services,
+                                onServiceClick = { service ->
+                                    if (service.id == "1") {
+                                        currentScreen = "PROPERTY_SCREEN"
+                                    } else {
+                                        activeServiceTitle = service.title
+                                        activeServiceUrl = service.targetUrl
+                                        currentScreen = "UTILITY_SCREEN"
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -52,11 +71,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SatyaSetuHomeScreen(
-    viewModel: VerificationViewModel,
-    onServiceClick: (String) -> Unit
+    services: List<CitizenServiceItem>,
+    onServiceClick: (CitizenServiceItem) -> Unit
 ) {
-    val services by viewModel.citizenServices.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -79,7 +96,7 @@ fun SatyaSetuHomeScreen(
             LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
                 items(services) { service ->
                     ServiceCard(service) {
-                        onServiceClick(service.id)
+                        onServiceClick(service)
                     }
                 }
             }
