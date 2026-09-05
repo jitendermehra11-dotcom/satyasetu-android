@@ -23,8 +23,10 @@ jobs:
         ./gradle-8.5/bin/gradle wrapper --gradle-version 8.5
         chmod +x gradlew
         
-    - name: Build Debug APK with Gradle
-      run: ./gradlew assembleDebug
+    - name: Build Debug APK with Info
+      run: ./gradlew assembleDebug --info
+      
+      
       
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
