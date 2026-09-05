@@ -97,7 +97,6 @@ fun SatyaSetuHomeScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            // आपातकालीन SOS बटन सबसे ऊपर
             Button(
                 onClick = onSosClick,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828)),
