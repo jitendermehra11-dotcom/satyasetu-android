@@ -3,18 +3,19 @@ package com.satyasetu.util
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.satyasetu.data.model.*
+import com.satyasetu.ui.screen.PropertyVerificationScreen
 import com.satyasetu.ui.viewmodel.VerificationViewModel
 
 class MainActivity : ComponentActivity() {
@@ -28,7 +29,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SatyaSetuHomeScreen(viewModel)
+                    var currentScreen by remember { mutableStateOf("HOME") }
+
+                    if (currentScreen == "PROPERTY_SCREEN") {
+                        PropertyVerificationScreen(viewModel)
+                    } else {
+                        SatyaSetuHomeScreen(
+                            viewModel = viewModel,
+                            onServiceClick = { serviceId ->
+                                if (serviceId == "1") {
+                                    currentScreen = "PROPERTY_SCREEN"
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -37,7 +51,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SatyaSetuHomeScreen(viewModel: VerificationViewModel) {
+fun SatyaSetuHomeScreen(
+    viewModel: VerificationViewModel,
+    onServiceClick: (String) -> Unit
+) {
     val services by viewModel.citizenServices.collectAsState()
 
     Scaffold(
@@ -61,7 +78,9 @@ fun SatyaSetuHomeScreen(viewModel: VerificationViewModel) {
 
             LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
                 items(services) { service ->
-                    ServiceCard(service)
+                    ServiceCard(service) {
+                        onServiceClick(service.id)
+                    }
                 }
             }
         }
@@ -69,9 +88,12 @@ fun SatyaSetuHomeScreen(viewModel: VerificationViewModel) {
 }
 
 @Composable
-fun ServiceCard(service: CitizenServiceItem) {
+fun ServiceCard(service: CitizenServiceItem, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
