@@ -59,30 +59,22 @@ class MainActivity : ComponentActivity() {
                             SatyaSetuHomeScreen(
                                 services = services,
                                 onServiceClick = { service ->
-                                    if (service.id == "1") {
-                                        currentScreen = "PROPERTY_SCREEN"
-                                    } else {
-                                        activeServiceTitle = service.title
-                                        activeServiceUrl = when (service.id) {
-                                            "2" -> "https://echallan.parivahan.gov.in/"
-                                            "3" -> "https://vahan.parivahan.gov.in/"
-                                            else -> "https://upbhulekh.gov.in/"
-                                        }
-                                        
-                                        currentScreen = "UTILITY_SCREEN"
-                                    }
-                                },
-                                onSosClick = {
-                                    currentScreen = "SOS_SCREEN"
+                                activeServiceTitle = service.title
+                                activeServiceUrl = when (service.id) {
+                                    "1" -> "https://upbhulekh.gov.in/"              // खसरा व भूलेख पोर्टल
+                                    "2" -> "https://echallan.parivahan.gov.in/"        // ई-चालान पोर्टल
+                                    "3" -> "https://bookmyhsrp.com/"                 // HSRP नंबर प्लेट बुकिंग
+                                    "4" -> "https://voters.eci.gov.in/"              // वोटर कार्ड पोर्टल
+                                    "5" -> "https://www.cibil.com/freecibilscore"    // फ्री सिबिल स्कोर पोर्टल
+                                    else -> "https://vahan.parivahan.gov.in/"        // वाहन/RC वेरिफिकेशन
                                 }
+                                currentScreen = "UTILITY_SCREEN"
+                              },
+                              onSosClick = {
+                                  currentScreen = "SOS_SCREEN"
+                              }
                             )
                         }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
