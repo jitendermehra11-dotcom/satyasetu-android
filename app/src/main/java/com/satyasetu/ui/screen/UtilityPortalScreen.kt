@@ -55,6 +55,8 @@ fun UtilityPortalScreen(
             factory = { context ->
                 WebView(context).apply {
                     settings.javaScriptEnabled = true
+                    settings.domStorageEnabled = true
+                    settings.databaseEnabled = true
                     webViewClient = WebViewClient()
                     loadUrl(url)
                     webView = this
