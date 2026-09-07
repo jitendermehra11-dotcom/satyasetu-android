@@ -64,7 +64,7 @@ fun MainAppNavigation() {
 @Composable
 fun SatyaSetuHomeScreen(onServiceClick: (CitizenServiceItem) -> Unit) {
     val services = listOf(
-        CitizenServiceItem("भूलेख (Bhulekh)", "https://upbhulekh.gov.in/"),
+        CitizenServiceItem("भूलेख (Bhulekh)", "https://dolr.gov.in/en/citizen-centric-services/"),
         CitizenServiceItem("ई-चालान (e-Challan)", "https://echallan.parivahan.gov.in/"),
         CitizenServiceItem("HSRP प्लेट", "https://jaagrukbharat.com/"),
         CitizenServiceItem("वोटर ID सेवा", "https://voters.eci.gov.in/"),
