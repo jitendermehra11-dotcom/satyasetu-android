@@ -1,68 +1,29 @@
-package com.satyasetu.ui.screens
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
+    <uses-permission android:name="android.permission.INTERNET" />
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun UtilityPortalScreen(
-    title: String,
-    url: String,
-    onBack: () -> Unit
-) {
-    var webView: WebView? by remember { mutableStateOf(null) }
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SatyaSetu"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SatyaSetu">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-    // फोन का बैक बटन दबाने पर वेबपेज हिस्ट्री में पीछे जाएगा
-    BackHandler(enabled = true) {
-        if (webView?.canGoBack() == true) {
-            webView?.goBack()
-        } else {
-            onBack()
-        }
-    }
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(title) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (webView?.canGoBack() == true) {
-                            webView?.goBack()
-                        } else {
-                            onBack()
-                        }
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        AndroidView(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            factory = { context ->
-                WebView(context).apply {
-                    settings.javaScriptEnabled = true
-                    webViewClient = WebViewClient()
-                    loadUrl(url)
-                    webView = this
-                }
-            },
-            update = {
-                webView = it
-            }
-        )
-    }
-}
+</manifest>
