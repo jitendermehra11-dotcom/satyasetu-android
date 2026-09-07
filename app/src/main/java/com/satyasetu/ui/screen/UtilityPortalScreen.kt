@@ -6,7 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,7 +21,7 @@ fun UtilityPortalScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
 
-    // फोन का बैक बटन दबाने पर वेबसाइट के पिछले पेज पर जाएगा
+    // बैक बटन हैंडलर
     BackHandler(enabled = true) {
         if (webView?.canGoBack() == true) {
             webView?.goBack()
@@ -42,7 +42,7 @@ fun UtilityPortalScreen(
                             onBack()
                         }
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
