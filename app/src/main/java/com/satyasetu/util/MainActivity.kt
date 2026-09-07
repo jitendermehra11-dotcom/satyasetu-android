@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = "PROPERTY_SCREEN"
                                     } else {
                                         activeServiceTitle = service.title
-                                        activeServiceUrl = service.targetUrl
+                                        activeServiceUrl = targetUrl
                                         currentScreen = "UTILITY_SCREEN"
                                     }
                                 },
