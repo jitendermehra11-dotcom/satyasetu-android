@@ -66,7 +66,7 @@ fun SatyaSetuHomeScreen(onServiceClick: (CitizenServiceItem) -> Unit) {
     val services = listOf(
         CitizenServiceItem("भूलेख (Bhulekh)", "https://upbhulekh.gov.in/"),
         CitizenServiceItem("ई-चालान (e-Challan)", "https://echallan.parivahan.gov.in/"),
-        CitizenServiceItem("HSRP प्लेट", "https://bookmyhsrp.com/"),
+        CitizenServiceItem("HSRP प्लेट", "https://jaagrukbharat.com/"),
         CitizenServiceItem("वोटर ID सेवा", "https://voters.eci.gov.in/"),
         CitizenServiceItem("CIBIL स्कोर", "https://www.cibil.com/")
     )
