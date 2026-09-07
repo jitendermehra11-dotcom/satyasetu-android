@@ -19,10 +19,9 @@ import com.satyasetu.ui.screen.EmergencySosScreen
 import com.satyasetu.ui.screen.PropertyVerificationScreen
 import com.satyasetu.ui.screen.UtilityPortalScreen
 import com.satyasetu.ui.viewmodel.VerificationViewModel
+val targetUrl: String = "https://satyasetu.gov.in"
 
 class MainActivity : ComponentActivity() {  
-   private val targetUrl: String = "https://satyasetu.gov.in"
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = VerificationViewModel()
