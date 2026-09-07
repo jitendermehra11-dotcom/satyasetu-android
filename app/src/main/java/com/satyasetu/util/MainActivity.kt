@@ -5,118 +5,104 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.satyasetu.data.model.*
-import com.satyasetu.ui.screen.EmergencySosScreen
-import com.satyasetu.ui.screen.PropertyVerificationScreen
-import com.satyasetu.ui.screen.UtilityPortalScreen
-import com.satyasetu.ui.viewmodel.VerificationViewModel
-val targetUrl: String = "https://satyasetu.gov.in"
+import com.satyasetu.ui.screens.UtilityPortalScreen
 
-class MainActivity : ComponentActivity() {  
+data class CitizenServiceItem(
+    val title: String,
+    val url: String
+)
+
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = VerificationViewModel()
-
         setContent {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var currentScreen by remember { mutableStateOf("HOME") }
-                    var activeServiceTitle by remember { mutableStateOf("") }
-                    var activeServiceUrl by remember { mutableStateOf("") }
+                    MainAppNavigation()
+                }
+            }
+        }
+    }
+}
 
-                    val services by viewModel.citizenServices.collectAsState()
+@Composable
+fun MainAppNavigation() {
+    var selectedService by remember { mutableStateOf<CitizenServiceItem?>(null) }
 
-                    when (currentScreen) {
-                        "PROPERTY_SCREEN" -> {
-                            PropertyVerificationScreen(viewModel)
-                        }
-                        "UTILITY_SCREEN" -> {
-                            UtilityPortalScreen(
-                                title = activeServiceTitle,
-                                url = activeServiceUrl,
-                                onBack = { currentScreen = "HOME" }
-                            )
-                        }
-                        "SOS_SCREEN" -> {
-                            EmergencySosScreen(
-                                viewModel = viewModel,
-                                onBack = { currentScreen = "HOME" }
-                            )
-                        }
-                        else -> {
-                            SatyaSetuHomeScreen(
-                                services = services,
-                                onServiceClick = { service ->
-                                activeServiceTitle = service.title
-                                activeServiceUrl = when (service.id) {
-                                    "1" -> "https://upbhulekh.gov.in/"              // खसरा व भूलेख पोर्टल
-                                    "2" -> "https://echallan.parivahan.gov.in/"        // ई-चालान पोर्टल
-                                    "3" -> "https://bookmyhsrp.com/"                 // HSRP नंबर प्लेट बुकिंग
-                                    "4" -> "https://voters.eci.gov.in/"              // वोटर कार्ड पोर्टल
-                                    "5" -> "https://www.cibil.com/freecibilscore"    // फ्री सिबिल स्कोर पोर्टल
-                                    else -> "https://vahan.parivahan.gov.in/"        // वाहन/RC वेरिफिकेशन
-                                }
-                                currentScreen = "UTILITY_SCREEN"
-                              },
-                              onSosClick = {
-                                  currentScreen = "SOS_SCREEN"
-                              }
-                            )
-                        }
+    if (selectedService == null) {
+        SatyaSetuHomeScreen(
+            onServiceClick = { service ->
+                selectedService = service
+            }
+        )
+    } else {
+        UtilityPortalScreen(
+            title = selectedService!!.title,
+            url = selectedService!!.url,
+            onBack = {
+                selectedService = null
+            }
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SatyaSetuHomeScreen(
-    services: List<CitizenServiceItem>,
-    onServiceClick: (CitizenServiceItem) -> Unit,
-    onSosClick: () -> Unit
-) {
+fun SatyaSetuHomeScreen(onServiceClick: (CitizenServiceItem) -> Unit) {
+    val services = listOf(
+        CitizenServiceItem("भूलेख (Bhulekh)", "https://upbhulekh.gov.in/"),
+        CitizenServiceItem("ई-चालान (e-Challan)", "https://echallan.parivahan.gov.in/"),
+        CitizenServiceItem("HSRP प्लेट", "https://bookmyhsrp.com/"),
+        CitizenServiceItem("वोटर ID सेवा", "https://voters.eci.gov.in/"),
+        CitizenServiceItem("CIBIL स्कोर", "https://www.cibil.com/")
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("सत्यसेतु (SatyaSetu)", fontWeight = FontWeight.Bold) },
+                title = { Text("सत्यसेतु - SatyaSetu", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0D47A1), 
-                    titleContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            Button(
-                onClick = onSosClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC62828)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("🚨 आपातकालीन SOS (Offline Mesh)", fontWeight = FontWeight.Bold, color = Color.White)
-            }
-
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
             Text(
-                text = "नागरिक व कानूनी सत्यापन पोर्टल",
-                fontSize = 18.sp,
+                text = "सरकारी एवं नागरिक सुविधाएं",
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(services) { service ->
-                    ServiceCard(service) {
-                        onServiceClick(service)
-                    }
+                    ServiceCard(service = service, onClick = { onServiceClick(service) })
                 }
             }
         }
@@ -128,14 +114,22 @@ fun ServiceCard(service: CitizenServiceItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
+            .height(110.dp)
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Text(text = service.title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = service.description, fontSize = 13.sp, color = Color.Gray)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = service.title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
