@@ -63,7 +63,12 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = "PROPERTY_SCREEN"
                                     } else {
                                         activeServiceTitle = service.title
-                                        activeServiceUrl = targetUrl
+                                        activeServiceUrl = when (service.id) {
+                                            "2" -> "https://echallan.parivahan.gov.in/"
+                                            "3" -> "https://vahan.parivahan.gov.in/"
+                                            else -> "https://upbhulekh.gov.in/"
+                                        }
+                                        
                                         currentScreen = "UTILITY_SCREEN"
                                     }
                                 },
